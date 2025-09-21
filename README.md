@@ -1,8 +1,8 @@
 # treesitter-autoinstall
 
-This is a very simple plugin that provides automatic installation for the new
-rewrite of [nvim-treesitter][nvim-treesitter], since it no longer provides such
-option.
+This is a very simple Neovim plugin that provides automatic installation for
+the new rewrite of [nvim-treesitter][nvim-treesitter], since it no longer
+provides such option.
 
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter/tree/main
 
