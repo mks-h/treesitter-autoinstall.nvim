@@ -11,7 +11,7 @@ local nvim_treesitter = require("nvim-treesitter")
 function detected_ft_cb(opts)
 	local ft = opts.match
 	if vim.list_contains(config.ignore, ft) then return end
-	nvim_treesitter.install(ft, { summary = true })
+	nvim_treesitter.install(ft)
 end
 
 -- @param user_config TSAConfig
