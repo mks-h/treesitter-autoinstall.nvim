@@ -1,27 +1,58 @@
 local M = {}
 
--- @class (exact) TSAConfig
--- @field ignore string[]
+---@class (exact) TSAConfig
+---@field ignore string[] Filetypes to ignore when auto installing
+---@field highlight boolean Whether to highlight installed filetypes
+---@field regex string[] Filetypes to also highlight with regex
 local config = {
-	ignore = {}
+	ignore = {},
+	highlight = true,
+	regex = {},
 }
 
 local nvim_treesitter = require("nvim-treesitter")
 
-function detected_ft_cb(opts)
-	local ft = opts.match
-	if vim.list_contains(config.ignore, ft) then return end
-	nvim_treesitter.install(ft)
+local function enable_highlight(ft, bufnr)
+	vim.treesitter.start(bufnr)
+	if vim.list_contains(config.regex, ft) then
+		vim.bo[bufnr].syntax = "on"
+	end
 end
 
--- @param user_config TSAConfig
+local function detected_ft_cb(args)
+	local ft = args.match
+
+	if vim.list_contains(config.ignore, ft) then
+		return
+	end
+
+	nvim_treesitter.install(ft):await(function()
+		if config.highlight then
+			local installed = nvim_treesitter.get_installed()
+
+			if vim.list_contains(installed, ft) then
+				enable_highlight(ft, args.buf)
+			end
+		end
+	end)
+end
+
+---@param user_config TSAConfig
 function M.setup(user_config)
+	local config_keys = vim.tbl_keys(config)
 	if user_config then
-		config.ignore = user_config.ignore or {}
+		for k, v in pairs(user_config) do
+			assert(vim.list_contains(config_keys, k),
+				"Key '" .. k .. "' is not supported in plugin's configuration")
+
+			config[k] = v
+		end
 	end
 
 	vim.api.nvim_create_autocmd("FileType", {
-		group = vim.api.nvim_create_augroup("TreesitterAutoinstallPlugin", { clear = true }),
+		group = vim.api.nvim_create_augroup("TreesitterAutoinstallPlugin", {
+			clear = true
+		}),
 		callback = detected_ft_cb
 	})
 end

@@ -11,8 +11,23 @@ provides such option.
 You need to call the setup function in order for the plugin to work.
 
 ```lua
+require("treesitter-autoinstall").setup()
+```
+
+### Configuration
+
+The following is the implicit plugin configuration. You can specify just the
+options you need. Notice that they are different from the original
+`nvim-treesitter` options — both in name *and* behaviour.
+
+```lua
 require("treesitter-autoinstall").setup({
-	ignore = { "lua" } -- Optionally, provide a list of filetypes to ignore
+    -- A list of *filetypes* to ignore.
+	ignore = {},
+    -- Auto-enable highlighting for installed grammars.
+	highlight = true,
+    -- A list of *filetypes* to also enable regex highlighting for
+	regex = {},
 })
 ```
 
