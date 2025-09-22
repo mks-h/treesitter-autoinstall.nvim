@@ -1,9 +1,9 @@
 local M = {}
 
 ---@class (exact) TSAConfig
----@field ignore string[] Filetypes to ignore when auto installing
----@field highlight boolean Whether to highlight installed filetypes
----@field regex string[] Filetypes to also highlight with regex
+---@field ignore? string[] Filetypes to ignore when auto installing
+---@field highlight? boolean Whether to highlight installed filetypes
+---@field regex? string[] Filetypes to also highlight with regex
 local config = {
 	ignore = {},
 	highlight = true,
@@ -42,7 +42,7 @@ local function detected_ft_cb(args)
 	end)
 end
 
----@param user_config TSAConfig
+---@param user_config? TSAConfig
 function M.setup(user_config)
 	local config_keys = vim.tbl_keys(config)
 	if user_config then
