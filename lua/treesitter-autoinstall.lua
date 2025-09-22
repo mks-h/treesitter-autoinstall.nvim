@@ -20,6 +20,7 @@ local function enable_highlight(ft, bufnr)
 end
 
 local function detected_ft_cb(args)
+	local bufnr = args.buf
 	local ft = args.match
 
 	if vim.list_contains(config.ignore, ft) then
@@ -27,11 +28,15 @@ local function detected_ft_cb(args)
 	end
 
 	nvim_treesitter.install(ft):await(function()
+		if not vim.api.nvim_buf_is_loaded(bufnr) then
+			return
+		end
+
 		if config.highlight then
 			local installed = nvim_treesitter.get_installed()
 
 			if vim.list_contains(installed, ft) then
-				enable_highlight(ft, args.buf)
+				enable_highlight(ft, bufnr)
 			end
 		end
 	end)
