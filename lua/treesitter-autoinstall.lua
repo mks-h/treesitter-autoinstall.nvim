@@ -27,7 +27,7 @@ local function detected_ft_cb(args)
 		return
 	end
 
-	if not vim.list_contains(nvim_tresitter.get_available(), ft)
+	if not vim.list_contains(nvim_treesitter.get_available(), ft)
 	then
 		return
 	end
