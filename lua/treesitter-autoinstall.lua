@@ -27,6 +27,11 @@ local function detected_ft_cb(args)
 		return
 	end
 
+	if not vim.list_contains(nvim_tresitter.get_available(), ft)
+	then
+		return
+	end
+
 	nvim_treesitter.install(ft):await(function()
 		if not vim.api.nvim_buf_is_loaded(bufnr) then
 			return
