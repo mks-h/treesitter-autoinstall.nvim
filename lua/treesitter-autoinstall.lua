@@ -22,16 +22,17 @@ end
 local function detected_ft_cb(args)
 	local bufnr = args.buf
 	local ft = args.match
+	local lang = vim.treesitter.language.get_lang(ft)
 
 	if vim.list_contains(config.ignore, ft) then
 		return
 	end
 
-	if not vim.list_contains(nvim_treesitter.get_available(), ft) then
+	if lang == ft and not vim.list_contains(nvim_treesitter.get_available(), ft) then
 		return
 	end
 
-	nvim_treesitter.install(ft):await(function()
+	nvim_treesitter.install(lang):await(function()
 		if not vim.api.nvim_buf_is_loaded(bufnr) then
 			return
 		end
