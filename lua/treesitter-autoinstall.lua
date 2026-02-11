@@ -12,23 +12,35 @@ local config = {
 
 local nvim_treesitter = require("nvim-treesitter")
 
-local function enable_highlight(ft, bufnr)
-	vim.treesitter.start(bufnr)
-	if vim.list_contains(config.regex, ft) then
-		vim.bo[bufnr].syntax = "on"
+local function enable_highlight(bufnr, regex)
+	if config.highlight then
+		vim.treesitter.start(bufnr)
+		if regex then
+			vim.bo[bufnr].syntax = "on"
+		end
 	end
 end
 
+local function is_installed(lang)
+		local installed = nvim_treesitter.get_installed()
+		return vim.list_contains(installed, lang)
+end
+
 local function detected_ft_cb(args)
-	local bufnr = args.buf
 	local ft = args.match
 	local lang = vim.treesitter.language.get_lang(ft)
 
-	if vim.list_contains(config.ignore, ft) then
+	if vim.list_contains(config.ignore, lang) then
 		return
 	end
 
-	if lang == ft and not vim.list_contains(nvim_treesitter.get_available(), ft) then
+	local bufnr = args.buf
+	local is_regex_enabled = vim.list_contains(config.regex, lang)
+
+	if is_installed(lang) then
+		enable_highlight(bufnr, is_regex_enabled)
+		return
+	elseif not vim.list_contains(nvim_treesitter.get_available(), lang) then
 		return
 	end
 
@@ -37,13 +49,7 @@ local function detected_ft_cb(args)
 			return
 		end
 
-		if config.highlight then
-			local installed = nvim_treesitter.get_installed()
-
-			if vim.list_contains(installed, ft) then
-				enable_highlight(ft, bufnr)
-			end
-		end
+		enable_highlight(bufnr, is_regex_enabled)
 	end)
 end
 
