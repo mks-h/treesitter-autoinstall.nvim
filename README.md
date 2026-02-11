@@ -22,11 +22,11 @@ options you need. Notice that they are different from the original
 
 ```lua
 require("treesitter-autoinstall").setup({
-    -- A list of *filetypes* to ignore.
+    -- A list of *treesitter languages* to ignore.
 	ignore = {},
-    -- Auto-enable highlighting for installed grammars.
+    -- Auto-enable highlighting for installed languages.
 	highlight = true,
-    -- A list of *filetypes* to also enable regex highlighting for
+    -- A list of *treesitter languages* to also enable regex highlighting for
 	regex = {},
 })
 ```
